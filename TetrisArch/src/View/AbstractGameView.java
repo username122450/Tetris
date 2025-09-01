@@ -14,8 +14,6 @@ public abstract class AbstractGameView {
 
     // 更新：默认先处理输入，再渲染
     public void update() {
-        handleInput();
-        draw();
     }
 
     // 退出：默认置为 NONE
