@@ -5,10 +5,9 @@ public class GameCore {
     public  void gameStart() {
         Setup();
         /*
-        游戏核心逻辑
+        游戏核心逻辑：
+
          */
-
-
         //释放资源
         End();
     }
