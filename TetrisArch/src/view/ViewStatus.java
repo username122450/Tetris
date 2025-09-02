@@ -1,4 +1,4 @@
-package View;
+package view;
 
 
 // 视图状态枚举：用于状态机管理
