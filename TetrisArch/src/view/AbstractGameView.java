@@ -1,4 +1,4 @@
-package View;
+package view;
 
 // 抽象游戏视图基类：
 public abstract class AbstractGameView {

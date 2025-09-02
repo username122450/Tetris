@@ -1,10 +1,10 @@
 package controller;
 
-import View.AbstractGameView;
+import view.AbstractGameView;
 
 public class GameCore {
     //当前所在的界面
-    public static View.AbstractGameView currentView = null;
+    public static view.AbstractGameView currentView = null;
 
     //经典模式游戏流程控制
     public  void gameStart() {
@@ -37,7 +37,7 @@ public class GameCore {
     调用旧视图 onExit退出旧的视图，
     设置新视图并 onEnter 进入新的视图；
      */
-    public void changeView(View.AbstractGameView next) {
+    public void changeView(view.AbstractGameView next) {
     }
 
     public static AbstractGameView getCurrentView() {
@@ -48,7 +48,7 @@ public class GameCore {
     //调用函数根据当前视图更新
     //调用函数更新游戏数据
     //调用函数更新画面
-    public void tick(long deltaMs) {
+    public void tick() {
 
     }
 }
