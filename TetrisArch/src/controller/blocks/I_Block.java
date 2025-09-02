@@ -14,10 +14,4 @@ public class I_Block extends Block {
                 }
         };
     }
-
-    //创建方块
-    @Override
-    public Block createBlock(){
-        return new I_Block();
-    }
 }
