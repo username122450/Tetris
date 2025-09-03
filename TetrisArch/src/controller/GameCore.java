@@ -6,7 +6,7 @@ public class GameCore {
     //当前所在的界面
     public static view.AbstractGameView currentView = null;
 
-    //经典模式游戏流程控制
+    //程序运行流程
     public  void gameStart() {
         Setup();
         /*
@@ -43,7 +43,7 @@ public class GameCore {
     public static AbstractGameView getCurrentView() {
         return currentView;
     }
-
+    //游戏流程
     //推进数据更新，页面切换等（只负责调用函数）
     //调用函数根据当前视图更新
     //调用函数更新游戏数据
