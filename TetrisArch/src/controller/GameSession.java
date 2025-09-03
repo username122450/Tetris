@@ -45,8 +45,7 @@ public final class GameSession {
 	// 向左移动
 	/*
 	调用函数判断是否可以向左移动（根据变量private BlockState active;）
-	1.移动，修改坐标
-	2.不更改坐标
+	1.移动，调用函数修改坐标
 	 */
 	public void tryMoveLeft() {}
 
@@ -54,7 +53,6 @@ public final class GameSession {
 	/*
 	调用函数判断是否可以向左移动（根据变量private BlockState active;）
 	1.移动，修改坐标
-	2.不更改坐标
 	 */
 	public void tryMoveRight() {}
 
