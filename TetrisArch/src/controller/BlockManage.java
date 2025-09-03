@@ -15,12 +15,27 @@ public class BlockManage {
 
     //在type中随机生成一个类型
     private String radomType(){
-        return "";
+        int index=rng.nextInt(7);
+        return type[index];
     };
 
     //根据类型随机生成一个方块(7个中的一个)
     public Block nextRadomBlock(String type){
-        return new Block();
+        if(type.equals("I")){
+            return new I_Block();
+        } else if (type.equals("O")) {
+            return new O_Block();
+        }else if (type.equals("LL")) {
+            return new LL_Block();
+        }else if (type.equals("LR")) {
+            return new LR_Block();
+        }else if (type.equals("T")) {
+            return new T_Block();
+        }else if (type.equals("ZL")) {
+            return new ZL_Block();
+        }else{
+            return new ZR_Block();
+        }
     }
 
     //构造函数（应该用不到）
