@@ -1,7 +1,9 @@
 package view;
 
+import javax.swing.*;
+
 // 抽象游戏视图基类：
-public abstract class AbstractGameView {
+public abstract class AbstractGameView{
     // 获取不同 View 的窗口
     protected javax.swing.JFrame jframe;
     // 当前视图状态，默认进入状态
