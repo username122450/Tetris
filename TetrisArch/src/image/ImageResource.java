@@ -1,4 +1,4 @@
-package images;
+package image;
 
 import java.awt.*;
 import java.nio.file.Path;
