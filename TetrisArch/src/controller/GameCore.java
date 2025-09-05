@@ -67,7 +67,7 @@ public class GameCore {
         //初始化图片控制
         ImageControl imageControl = new ImageControl();
         //加载图片
-        imageControl.loadImage("");
+        imageControl.loadImage("","");
 
         System.out.println("游戏资源加载完毕");
     }
@@ -84,7 +84,7 @@ public class GameCore {
 
         //卸载图片
         ImageControl imageControl = new ImageControl();
-        imageControl.loadImage("");
+        imageControl.loadImage("","");
 
         System.out.println("游戏资源已释放");
     }
