@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.*;
 import java.util.Random;
 
 // 对局的数据与更新
@@ -12,7 +13,7 @@ public final class GameSession {
 	private Block next;
 	//得分
 	private int score;
-
+	private boolean isGameOver = false;
 	//方块下落的间隔时间
 	private long fallIntervalMs = 500;
 
@@ -22,9 +23,13 @@ public final class GameSession {
 
 	//生成首个 active方块 与 next下一个方块
 	public void startNewGame() {
-
+		isGameOver = false;
+		score = 0;
+		Block block = BlockManage.nextRadomBlock(BlockManage.radomType());
+		int startX = (board.getWidth() - 4) / 2;
+		active = new BlockState(block, new Point(startX, 0), 0);
+		next = BlockManage.nextRadomBlock(BlockManage.radomType());
 	}
-
 	//更新方块并且执行语句
 	/*
 	定时下落
@@ -37,7 +42,22 @@ public final class GameSession {
 		游戏继续
 	 */
 	public void updateTick() {
+		if (isGameOver) return;
 
+		if (Rules.canMove(board, active, 0, 1)) {
+			active = active.withPosition(active.position.x, active.position.y + 1);
+		} else {
+			board.lock(active);
+			int clearedLines = board.clearFullLines();
+			score += Scoring.scoreForClears(clearedLines);
+
+			active = new BlockState(next, new Point((board.getWidth() - 4)/2, 0), 0);
+			next = BlockManage.nextRadomBlock(BlockManage.radomType());
+
+			if (!Rules.isValid(board, active)) {
+				isGameOver = true;
+			}
+		}
 	}
 
 	public boolean isGameOver() { return false; }
@@ -47,20 +67,32 @@ public final class GameSession {
 	调用函数判断是否可以向左移动（根据变量private BlockState active;）
 	1.移动，调用函数修改坐标
 	 */
-	public void tryMoveLeft() {}
+	public void tryMoveLeft() {
+		if (!isGameOver && Rules.canMove(board, active, -1, 0)) {
+		active = active.withPosition(active.position.x - 1, active.position.y);
+	}
+	}
 
 	// 向右移动
 	/*
 	调用函数判断是否可以向左移动（根据变量private BlockState active;）
 	1.移动，修改坐标
 	 */
-	public void tryMoveRight() {}
+	public void tryMoveRight() {
+		if (!isGameOver && Rules.canMove(board, active, 1, 0)) {
+			active = active.withPosition(active.position.x + 1, active.position.y);
+		}
+	}
 
 	//向下坠落
 	/*
 	每每隔一段时间方块就向下移动一格
 	 */
-	public void tryDrop() {}
+	public void tryDrop() {
+		if (!isGameOver && Rules.canMove(board, active, 0, 1)) {
+			active = active.withPosition(active.position.x, active.position.y + 1);
+		}
+	}
 
 	//旋转方块
 	/*
@@ -68,7 +100,14 @@ public final class GameSession {
 	1.可以旋转就改变旋转度数
 	2.不行就不变
 	 */
-	public void tryRotateCW() {}
+	public void tryRotateCW() {
+		if (!isGameOver) {
+			int nextRotation = active.rotation + 1;
+			if (Rules.canRotate(board, active, nextRotation)) {
+				active = active.withRotation(nextRotation);
+			}
+		}
+	}
 
 	// 通过函数获取私有数据
 	public Board getBoard() { return board; }
