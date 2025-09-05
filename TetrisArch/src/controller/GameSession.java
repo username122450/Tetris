@@ -1,7 +1,6 @@
 package controller;
 
 import java.awt.*;
-import java.util.Random;
 
 // 对局的数据与更新
 public final class GameSession {
@@ -88,10 +87,11 @@ public final class GameSession {
 	/*
 	每每隔一段时间方块就向下移动一格
 	 */
-	public void tryDrop() {
+	public boolean tryDrop() {
 		if (!isGameOver && Rules.canMove(board, active, 0, 1)) {
 			active = active.withPosition(active.position.x, active.position.y + 1);
 		}
+		return false;
 	}
 
 	//旋转方块

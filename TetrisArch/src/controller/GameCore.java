@@ -94,7 +94,7 @@ public class GameCore {
     调用旧视图 onExit退出旧的视图，
     设置新视图并 onEnter 进入新的视图；
      */
-    public void changeView(view.AbstractGameView next) {
+    public static void changeView(view.AbstractGameView next) {
         if(currentView != null){
             currentView.onExit();
         }
