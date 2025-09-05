@@ -1,8 +1,6 @@
 package view.page;
 
-import controller.BlockState;
-import controller.Board;
-import controller.GameSession;
+import controller.*;
 import globle.Global;
 import view.AbstractGameView;
 import view.ViewStatus;
@@ -177,9 +175,6 @@ public class GameView extends AbstractGameView {
                     case KeyEvent.VK_W:
                         gameSession.tryRotateCW(); // 旋转方块
                         break;
-                    case KeyEvent.VK_S:
-                        gameSession.tryDrop(); // 加速下落
-                        break;
                     case KeyEvent.VK_A:
                         gameSession.tryMoveLeft(); // 左移
                         break;
@@ -216,8 +211,8 @@ public class GameView extends AbstractGameView {
      */
     @Override
     public void onExit() {
-        status = ViewStatus.ON_ENTER;
-        System.exit(0);
+        GameCore.changeView(new GameOverView());
+        GameCore.getCurrentView().onEnter();
     }
 
     //更新游戏数据
@@ -231,6 +226,16 @@ public class GameView extends AbstractGameView {
     @Override
     public void update() {
         status = ViewStatus.ON_EXIT;
+        if (gameSession == null) return;
+
+        if (!gameSession.tryDrop()){ //可能需要修改对应方法的返回值
+            gameSession.getBoard().lock(gameSession.getActive());
+            gameSession.startNewGame();
+        }
+        if (!gameSession.tryDrop()){
+            onExit();
+        }
         draw();
+        jframe.repaint();
     }
 }

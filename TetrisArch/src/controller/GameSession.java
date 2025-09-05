@@ -62,7 +62,9 @@ public final class GameSession {
 	/*
 	每每隔一段时间方块就向下移动一格
 	 */
-	public void tryDrop() {}
+	public boolean tryDrop() {
+		return false;
+	}
 
 	//旋转方块
 	/*
