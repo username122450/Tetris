@@ -1,6 +1,6 @@
 package view.page;
 
-import View.AbstractGameView;
+import view.AbstractGameView;
 
 public class MenuView extends AbstractGameView {
 

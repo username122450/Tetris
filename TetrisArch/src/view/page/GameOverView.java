@@ -1,6 +1,6 @@
 package view.page;
 
-import View.AbstractGameView;
+import view.AbstractGameView;
 
 public class GameOverView extends AbstractGameView {
     protected boolean isReStart;
@@ -26,18 +26,18 @@ public class GameOverView extends AbstractGameView {
     //进入界面初始化
     @Override
     public void onEnter() {
-        super.onEnter();
+
     }
 
     //数据更新方法
     @Override
     public void update() {
-        super.update();
+
     }
 
     //退出方法;重写
     @Override
     public void onExit(){
-        super.onExit();
+
     };
 }
