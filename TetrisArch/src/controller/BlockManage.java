@@ -14,12 +14,12 @@ public class BlockManage {
     }
 
     //在type中随机生成一个类型
-    private String radomType(){
+    public static String radomType(){
         return "";
     };
 
     //根据类型随机生成一个方块(7个中的一个)
-    public Block nextRadomBlock(String type){
+    public static Block nextRadomBlock(String type){
         return new Block();
     }
 
