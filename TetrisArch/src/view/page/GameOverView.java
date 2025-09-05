@@ -8,7 +8,6 @@ public class GameOverView extends AbstractGameView {
     //初始化
     @Override
     protected void init() {
-
     }
 
     //绘制结束窗口
