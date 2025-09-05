@@ -4,11 +4,11 @@ import java.awt.*;
 
 // NEW: 规则判定（碰撞/边界/旋转），独立于渲染与输入
 public final class Rules {
-	private Rules() {}
+	private Rules() {
+	}
 
 	//判定在棋盘内且没有碰撞（碰撞判定）
 	public static boolean isValid(Board board, BlockState state) {
-
 		int[][] cells = board.getCells();
 		int boardWidth = board.getWidth();
 		int boardHeight = board.getHeight();
@@ -17,7 +17,6 @@ public final class Rules {
 		int[][] shapeMatrix = state.shape.shade[rotation];
 		for (int row = 0; row < 4; row++) {
 			for (int col = 0; col < 4; col++) {
-
 				if (shapeMatrix[row][col] == 2) {
 					int x = pos.x + col;
 					int y = pos.y + row;
@@ -39,7 +38,6 @@ public final class Rules {
 		BlockState newState = new BlockState(state.shape, newPos, state.rotation);
 		return isValid(board, newState);
 	}
-
 	//尝试旋转，是否可以旋转
 	public static boolean canRotate(Board board, BlockState state, int nextRotation) {
 		int normalizedRotation = nextRotation & 3;
