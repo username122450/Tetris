@@ -6,7 +6,11 @@ public final class Scoring {
 
 	//计算分数，几行得几分
 	public static int scoreForClears(int lines) {
-		return 0;
+
+		if (lines <= 0) {
+			return 0;
+		}
+		return lines;
 	}
 }
 
