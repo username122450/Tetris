@@ -237,7 +237,7 @@ public class GameView extends AbstractGameView {
     //构造函数
     public GameView(){
         /// 属性设置
-        this.gameSession = new GameSession(new Board(20,36));//棋盘
+        this.gameSession = new GameSession(new Board(20,32));//棋盘
         this.score = 0;//分数
         corePanel = new JPanel(new BorderLayout(5,5));
 
