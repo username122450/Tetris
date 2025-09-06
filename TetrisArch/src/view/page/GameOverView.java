@@ -1,12 +1,12 @@
 package view.page;
 
 import globle.Global;
-import view.AbstractGameView;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import sound.MusicControl;
+import view.AbstractGameView;
 
 public class GameOverView extends AbstractGameView {
     protected boolean isReStart;
@@ -112,6 +112,8 @@ public class GameOverView extends AbstractGameView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 重新开始游戏
+                MusicControl.playSound("button", false);
+                MusicControl.playSound("background", false);
                 GameView gameView = new GameView();
                 gameView.start();
                 // 关闭当前窗口
@@ -122,6 +124,8 @@ public class GameOverView extends AbstractGameView {
         menuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                MusicControl.playSound("button", false);
+                MusicControl.playSound("background", false);
                 // 返回主菜单
                 MenuView menuView = new MenuView();
                 menuView.start();

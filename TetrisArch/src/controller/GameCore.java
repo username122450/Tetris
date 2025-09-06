@@ -1,6 +1,5 @@
 package controller;
 
-import image.ImageControl;
 import sound.MusicControl;
 import view.page.MenuView;
 
@@ -12,9 +11,6 @@ public class GameCore {
         // 直接启动主菜单
         MenuView menuView = new MenuView();
         menuView.start();
-
-        //释放资源
-        End();
     }
 
     //环境初始化：负责加载游戏必要的资源:音乐图片等：
@@ -24,7 +20,7 @@ public class GameCore {
         //加载音乐
         musicControl.loadAllSounds();;
         //播放音乐
-//        musicControl.playSound("",true);
+        musicControl.playSound("background",true);
 
         //初始化图片控制
 //        ImageControl imageControl = new ImageControl();
@@ -35,7 +31,7 @@ public class GameCore {
     }
 
     //游戏结束关闭资源：卸载资源
-    private void End(){
+    public static void End(){
         //卸载音乐
         MusicControl musicControl = new MusicControl();
         musicControl.unloadAllSounds();

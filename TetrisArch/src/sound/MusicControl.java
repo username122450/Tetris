@@ -94,7 +94,7 @@ public class MusicControl {
     name:别称
     isLoop：是否循环播放
      */
-    public void playSound(String name, boolean isLoop) {
+    public static void playSound(String name, boolean isLoop) {
         Clip clip = clips.get(name);
         if (clip == null) {
             System.err.println("播放失败，音频未加载: " + name);
@@ -113,7 +113,7 @@ public class MusicControl {
     /*
     name：音频加载后的别称
      */
-    public void pauseSound(String name) {
+    public static void pauseSound(String name) {
         Clip clip = clips.get(name);
         if (clip != null && clip.isRunning()) {
             clip.stop();

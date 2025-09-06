@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.*;
+import sound.MusicControl;
 import view.AbstractGameView;
 
 public class GameView extends AbstractGameView {
@@ -222,6 +223,8 @@ public class GameView extends AbstractGameView {
         this.dispose();
         
         // 显示游戏结束界面
+        MusicControl.pauseSound("background");
+        MusicControl.playSound("GameOver", false);
         GameOverView gameOverView = new GameOverView();
         gameOverView.start();
         
