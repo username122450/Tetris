@@ -6,12 +6,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import view.AbstractGameView;
 import view.page.helper_classes.CustomFontLoader;
 import view.page.helper_classes.OnClickEventHelper;
 import view.page.helper_classes.RoundedBorder;
 
 public class MenuView extends AbstractGameView {
+    private static boolean menuRunning = false; // 防止重复创建菜单窗口
     private JFrame frame = new JFrame("Tetris");
     private JPanel panel = new JPanel();
 
@@ -23,6 +25,18 @@ public class MenuView extends AbstractGameView {
     private JButton exit = new JButton("Exit");
     
     
+
+    @Override
+    public void start() {
+        //防止一直创建菜单窗口
+        if (menuRunning) {
+            System.out.println("菜单已存在");
+            return;
+        }
+        menuRunning = true;
+        super.start();
+    }
+    
     //初始化主菜单
     @Override
     protected void init() {
@@ -30,6 +44,7 @@ public class MenuView extends AbstractGameView {
         frame.setSize(941, 648);
         panel.setLayout(null);
         panel.setBackground(Color.decode("#eeeeee"));
+        frame.setVisible(true);
     }
 
     //绘制主菜单界面
@@ -102,34 +117,26 @@ public class MenuView extends AbstractGameView {
         start.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
-                //点击Start之后从这里开始执行函数
-                System.out.println("Test Button");
+                menuRunning = false;
+                // 直接创建并启动游戏
+                GameView gameView = new GameView();
+                gameView.start();
+                // 关闭当前菜单窗口
+                frame.dispose();
             }
         });
         //退出游戏
         exit.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
+                menuRunning = false;
                 onExit();
             }
         });
     }
 
-    //进入界面处理
-    @Override
-    public void onEnter() {
-        super.onEnter();
-    }
-
     //退出游戏时调用
-    @Override
     public void onExit() {
-        super.onExit();
-    }
-
-    //更新界面（如果界面有数据更新）
-    @Override
-    public void update() {
-        super.update();
+        frame.dispose();
     }
 }

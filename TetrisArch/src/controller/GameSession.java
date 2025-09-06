@@ -26,7 +26,7 @@ public final class GameSession {
 		score = 0;
 		Block block = BlockManage.nextRadomBlock(BlockManage.radomType());
 		int startX = (board.getWidth() - 4) / 2;
-		active = new BlockState(block, new Point(startX, 0), 0);
+		active = new BlockState(block, new Point(0, startX), 0);
 		next = BlockManage.nextRadomBlock(BlockManage.radomType());
 	}
 	//更新方块并且执行语句
@@ -43,14 +43,14 @@ public final class GameSession {
 	public void updateTick() {
 		if (isGameOver) return;
 
-		if (Rules.canMove(board, active, 0, 1)) {
-			active = active.withPosition(active.position.x, active.position.y + 1);
+		if (Rules.canMove(board, active, 1, 0)) {
+			active = active.withPosition(active.position.x + 1, active.position.y);
 		} else {
 			board.lock(active);
 			int clearedLines = board.clearFullLines();
 			score += Scoring.scoreForClears(clearedLines);
 
-			active = new BlockState(next, new Point((board.getWidth() - 4)/2, 0), 0);
+			active = new BlockState(next, new Point(0, (board.getWidth() - 4)/2), 0);
 			next = BlockManage.nextRadomBlock(BlockManage.radomType());
 
 			if (!Rules.isValid(board, active)) {
@@ -59,39 +59,43 @@ public final class GameSession {
 		}
 	}
 
-	public boolean isGameOver() { return false; }
+	public boolean isGameOver() { return isGameOver; }
 
 	// 向左移动
 	/*
 	调用函数判断是否可以向左移动（根据变量private BlockState active;）
 	1.移动，调用函数修改坐标
+	在二维数组中，向左移动是y坐标减1
 	 */
 	public void tryMoveLeft() {
-		if (!isGameOver && Rules.canMove(board, active, -1, 0)) {
-		active = active.withPosition(active.position.x - 1, active.position.y);
-	}
+		if (!isGameOver && Rules.canMove(board, active, 0, -1)) {
+			active = active.withPosition(active.position.x, active.position.y - 1);
+		}
 	}
 
 	// 向右移动
 	/*
-	调用函数判断是否可以向左移动（根据变量private BlockState active;）
+	调用函数判断是否可以向右移动（根据变量private BlockState active;）
 	1.移动，修改坐标
+	在二维数组中，向右移动是y坐标加1
 	 */
 	public void tryMoveRight() {
-		if (!isGameOver && Rules.canMove(board, active, 1, 0)) {
-			active = active.withPosition(active.position.x + 1, active.position.y);
+		if (!isGameOver && Rules.canMove(board, active, 0, 1)) {
+			active = active.withPosition(active.position.x, active.position.y + 1);
 		}
 	}
 
 	//向下坠落
 	/*
 	每每隔一段时间方块就向下移动一格
+	在二维数组中，向下移动是x坐标加1
 	 */
 	public boolean tryDrop() {
-		if (!isGameOver && Rules.canMove(board, active, 0, 1)) {
-			active = active.withPosition(active.position.x, active.position.y + 1);
+		if (!isGameOver && Rules.canMove(board, active, 1, 0)) {
+			active = active.withPosition(active.position.x + 1, active.position.y);
+			return true; // 成功下落返回true
 		}
-		return false;
+		return false; // 无法下落返回false
 	}
 
 	//旋转方块

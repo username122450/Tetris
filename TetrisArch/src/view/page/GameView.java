@@ -3,21 +3,52 @@ package view.page;
 import controller.*;
 import globle.Global;
 import view.AbstractGameView;
-import view.ViewStatus;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameView extends AbstractGameView {
+    private static boolean gameRunning = false; // 防止重复创建游戏窗口
     private GameSession gameSession;
     final int BLOCK_SIZE = 20;
-    private JPanel centerPanel;
-    private Label soreLabel;
+    private int score;
+    private JLabel scoreLabel;
+    private JPanel centerPanel ;
+    private JPanel corePanel;
+
+    //计时器
+    private java.util.Timer autoDropTimer; // 计时器
+    private final long DROP_INTERVAL = 500; // 下落时间
+
+    // 公共方法：启动游戏,启动游戏调用次方法
+    public void startGame() {
+        if (gameRunning) {
+            System.out.println("游戏已经在运行中，无法重复启动");
+            return;
+        }
+        gameRunning = true;
+        init();
+    }
+    
+    // 重写start方法
+    @Override
+    public void start() {
+        if (gameRunning) {
+            System.out.println("游戏已经在运行中，无法重复启动");
+            return;
+        }
+        gameRunning = true;
+        super.start();
+    }
+
+
     //绘制地图
-    private void map(){
+    private void setCenterPanel() {
         centerPanel = new JPanel(){
             @Override
             public void paintComponent(Graphics g){
@@ -29,28 +60,45 @@ public class GameView extends AbstractGameView {
                 int offsetX = (getWidth() - mapPanelWidth) / 2;     //计算偏移量
                 int offsetY = (getHeight() - mapPanelHeight) / 2;   //计算偏移量
 
-                int[][] originalCells = gameSession.getBoard().getCells();//获取当前地图（临时地图）
-                int[][] cells = new int[originalCells.length][originalCells[0].length];
+                int[][] originalCells = gameSession.getBoard().getCells();//获取当前地图（临时地图）用来绘制不修改
+                int[][] cells = new int[originalCells.length][originalCells[0].length];//复制地图
                 for (int i = 0; i < originalCells.length; i++) {
                     cells[i] = Arrays.copyOf(originalCells[i], originalCells[i].length);
                 }
 
                 BlockState active = gameSession.getActive(); //获取初始活动方块
 
-                for (int i = 0; i < 4; i++) {   //把当前方块谢到数组中
-                    for (int j = 0; j < 4; j++) {
-                        if (active.shape.shade[active.rotation][i][j] == 2){    //修改一下block类为public属性或增加get（）方法
-                            cells[active.position.x + i][active.position.y + j] = 2;
+                // 检查活动方块是否存在
+                if (active != null) {
+                    for (int i = 0; i < 4; i++) {   //把当前方块写到数组中
+                        for (int j = 0; j < 4; j++) {
+                            if (active.shape.shade[active.rotation][i][j] == 2){    //修改一下block类为public属性或增加get（）方法
+                                int newX = active.position.x + i;
+                                int newY = active.position.y + j;
+                                // 检查边界，防止数组越界
+                                if (newX >= 0 && newX < gameSession.getBoard().getHeight() &&
+                                        newY >= 0 && newY < gameSession.getBoard().getWidth()) {
+                                    cells[newX][newY] = 3; // 使用3表示当前活动方块，避免与锁定的方块(2)冲突
+                                }
+                            }
                         }
                     }
                 }
 
                 for (int row = 0; row < gameSession.getBoard().getHeight(); row++){ //绘制整个棋盘
                     for (int col = 0; col < gameSession.getBoard().getWidth(); col++){
-                        if (cells[row][col] == 2){
-                            int px = offsetX + col * BLOCK_SIZE;    //根据偏移量计算位置
-                            int py = offsetY + row * BLOCK_SIZE;
+                        int px = offsetX + col * BLOCK_SIZE;    //根据偏移量计算位置
+                        int py = offsetY + row * BLOCK_SIZE;
 
+                        if (cells[row][col] == 2){
+                            // 绘制已锁定的方块（灰色）
+                            g2d.setColor(Color.GRAY);
+                            g2d.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+                            
+                            g2d.setColor(Color.DARK_GRAY);
+                            g2d.fillRect(px + 2, py + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+                        } else if (cells[row][col] == 3){
+                            // 绘制当前活动方块（黄色）
                             g2d.setColor(Color.yellow);
                             g2d.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
 
@@ -62,180 +110,214 @@ public class GameView extends AbstractGameView {
                 g2d.dispose();
             }
         };
-        centerPanel.setPreferredSize(new Dimension(400, 600));  //设置界面大小
-        centerPanel.setBackground(Color.BLACK); //放到整个窗口中
-
+        centerPanel.setPreferredSize(new Dimension(400,600));//占用窗口的大小
+        centerPanel.setBackground(Color.black);//设置背景
+        centerPanel.setBorder(BorderFactory.createLineBorder(Color.CYAN));
     };
 
-    //绘制正在移动的方块
-    private void drawMoveBlocks(){};//合并到地图绘制中
-
-    //绘制分数
-    private void drawSore(){
-        soreLabel.setText("Sore:" + (gameSession.getScore()));
-    };
-
-    //用于最后绘制窗口和游戏内容
     @Override
     protected void draw() {
-        map();
-        drawSore();
+        // 重绘中心面板
+        if (centerPanel != null) {
+            centerPanel.repaint();
+        }
     }
 
-
-    //初始化游戏数据
     @Override
     protected void init() {
-        //初始化地图
-        Board board = new Board(20,30);
-        for (int row = 0; row < board.getHeight(); row++){
-            for (int col = 0; col < board.getWidth(); col++){
-                board.getCells()[row][col] = 1;
-            }
-        }
-        this.gameSession = new GameSession(board);
+        // 显示界面
+        this.setVisible(true);
+        
+        // 初始化游戏
         gameSession.startNewGame();
+        
+        // 设置键盘输入处理
+        handleInput();
+        
+        // 启动定时器，定期更新界面
+        startGameTimer();
+        
+        // 更新分数显示
+        updateScoreDisplay();
+        
+        // 重绘界面
+        centerPanel.repaint();
+    }
 
-        this.jframe = new JFrame();
-        this.jframe.setTitle("Tetris"); //标题
-        this.jframe.setSize(800,1200); //窗口大小
-        this.jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //点叉号直接关闭
-        this.jframe.setVisible(true);//是否可见
-        this.jframe.setAlwaysOnTop(true);//一直在上层
+    @Override
+    protected void handleInput() {
+        // 处理键盘输入 - 只在第一次调用时添加监听器
+        if (this.getKeyListeners().length == 0) {
+            this.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (gameSession.isGameOver()) {
+                        return; // 游戏结束时忽略输入
+                    }
+                    
+                    switch (e.getKeyCode()) {
+                        case KeyEvent.VK_A:
+                            gameSession.tryMoveLeft();
+                            break;
+                        case KeyEvent.VK_D:
+                            gameSession.tryMoveRight();
+                            break;
+                        case KeyEvent.VK_S:
+                            gameSession.tryDrop();
+                            break;
+                        case KeyEvent.VK_W:
+                            gameSession.tryRotateCW();
+                            break;
+                        case KeyEvent.VK_SPACE:
+                            // 快速下落
+                            while (gameSession.tryDrop()) {
+                                // 继续下落直到不能下落
+                            }
+                            break;
+                    }
+                    
+                    // 更新分数显示
+                    updateScoreDisplay();
+                    
+                    // 重绘界面
+                    draw();
+                }
+            });
+        }
+        
+        // 设置焦点以便接收键盘事件
+        this.setFocusable(true);
+        this.requestFocus();
+    }
+    
+    // 更新分数显示
+    private void updateScoreDisplay() {
+        if (scoreLabel != null) {
+            score = gameSession.getScore();
+            scoreLabel.setText("分数: " + score);
+        }
+    }
+    
+    // 游戏结束处理
+    public void onGameOver() {
+        // 停止定时器
+        stopGameTimer();
+        
+        // 重置游戏运行标志
+        gameRunning = false;
+        
+        // 隐藏并关闭当前窗口
+        this.setVisible(false);
+        this.dispose();
+        
+        // 显示游戏结束界面
+        GameOverView gameOverView = new GameOverView();
+        gameOverView.start();
+        
+        System.out.println("游戏结束！最终分数: " + score);
+    }
 
-        JPanel panel = new JPanel(new BorderLayout(5,5));//参数：组件之间的边距
-        JPanel topPanel = new JPanel();
-        JPanel LeftPanel = new JPanel(new GridLayout(4,1));
-        JPanel rightPanel = new JPanel(new GridLayout(4, 1));
-        JPanel bottomPanel = new JPanel();
+    
+    //获取当前分数
+    public int getCurrentScore() {
+        return gameSession.getScore();
+    }
 
-        //顶部的标签设置
-        topPanel.setPreferredSize(new Dimension(0,160));
-        topPanel.setBackground(Color.LIGHT_GRAY);
-        Label north = new Label("Tetris");
-        north.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 100));
-        topPanel.add(north);
+    //构造函数
+    public GameView(){
+        /// 属性设置
+        this.gameSession = new GameSession(new Board(20,30));//棋盘
+        this.score = 0;//分数
+        corePanel = new JPanel(new BorderLayout(5,5));
 
-        //底部的标签设置
-        bottomPanel.setPreferredSize(new Dimension(0,160));
-        bottomPanel.setBackground(Color.LIGHT_GRAY);
-        Label south = new Label("Other functions");
-        south.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
-        bottomPanel.add(south);
+        /// 面板设置
+        this.setTitle("俄罗斯方块游戏");
+        this.setAlwaysOnTop(true);
+        this.setVisible(false); // 初始隐藏界面
+        this.setSize(Global.wide, Global.height);
+        this.setLocationRelativeTo(null);//居中
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //左边的标签设置
-        LeftPanel.setPreferredSize(new Dimension(180,0));
-        LeftPanel.setBackground(Color.LIGHT_GRAY);
-        Label west = new Label("HAPPY—GAME",Label.CENTER);
-        west.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        LeftPanel.add(west);
+        //中心面板设置
+        setCenterPanel();
+        corePanel.add(centerPanel, BorderLayout.CENTER);
 
+        //上方的面板
+        JPanel TopPanel = new JPanel();
+        TopPanel.setBackground(Color.LIGHT_GRAY);
+        TopPanel.setPreferredSize(new Dimension(0,155));//占用窗口的大小
+        Label top = new Label("Tetris");
+        TopPanel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 100));
+        TopPanel.add(top);
+        corePanel.add(TopPanel, BorderLayout.NORTH);
 
-        //右边边的标签设置
-        rightPanel.setPreferredSize(new Dimension(180,0));
-        rightPanel.setBackground(Color.LIGHT_GRAY);
-        Label east = new Label("Ranking",Label.CENTER);
-        soreLabel = new Label("Sore:" + gameSession.getScore(),Label.CENTER);
-        east.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        soreLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        rightPanel.add(east);
-        rightPanel.add(soreLabel);
+        //底部
+        JPanel BottomPanel = new JPanel();
+        BottomPanel.setPreferredSize(new Dimension(0,155));//占用窗口的大小
+        BottomPanel.setBackground(Color.LIGHT_GRAY);//设置背景
+        Label bottom = new Label("Other functions");
+        bottom.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
+        BottomPanel.add(bottom);
+        corePanel.add(BottomPanel, BorderLayout.SOUTH);
+
+        //左边
+        JPanel LeftPanel = new JPanel(new GridLayout(2,1));
+        LeftPanel.setPreferredSize(new Dimension(190,0));//占用窗口的大小
+        LeftPanel.setBackground(Color.LIGHT_GRAY); //设置背景
+        Label left = new Label("HAPPY—GAME",Label.CENTER);
+        left.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
+        LeftPanel.add(left);
+        corePanel.add(LeftPanel, BorderLayout.WEST);
+
+        //右边
+        JPanel RightPanel = new JPanel(new GridLayout(2,1));
+        scoreLabel = new JLabel("Score: " + score); //标签
+        RightPanel.setPreferredSize(new Dimension(190,0));  //占用窗口的大小
+        RightPanel.setBackground(Color.LIGHT_GRAY);//设置背景
+        Label right = new Label("Ranking",Label.CENTER);//设置右标签
+        right.setFont(new Font(Font.DIALOG, Font.BOLD, 20));//设置字体
+        scoreLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 20));//设置字体
+        RightPanel.add(right);
+        RightPanel.add(scoreLabel);
+        corePanel.add(RightPanel, BorderLayout.EAST);
 
 
         //添加到主面板
-        panel.add(topPanel, BorderLayout.NORTH);
-        panel.add(rightPanel, BorderLayout.EAST);
-        panel.add(LeftPanel, BorderLayout.WEST);
-        panel.add(bottomPanel, BorderLayout.SOUTH);
-
-        map();
-        panel.add(centerPanel, BorderLayout.CENTER);
-        this.jframe.add(panel);
-        handleInput();
-
-        this.jframe.revalidate();
-        this.jframe.repaint();
+        this.add(corePanel);
     }
 
-    //用户输入
-    /*
-    w：旋转
-    s：向下加速
-    a：左移一格
-    d：右移一格
-     */
-    @Override
-    protected void handleInput() {
-        jframe.addKeyListener(new KeyAdapter() {
+    // 启动游戏定时器
+    private void startGameTimer() {
+        autoDropTimer = new Timer();
+        autoDropTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                if (gameSession == null) return;
-
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W:
-                        gameSession.tryRotateCW(); // 旋转方块
-                        break;
-                    case KeyEvent.VK_A:
-                        gameSession.tryMoveLeft(); // 左移
-                        break;
-                    case KeyEvent.VK_D:
-                        gameSession.tryMoveRight(); // 右移
-                        break;
-                }
-
-                // 更新界面
-                draw();
-                jframe.repaint();
+            public void run() {
+                SwingUtilities.invokeLater(() -> {
+                    // 检查游戏是否结束
+                    if (gameSession.isGameOver()) {
+                        onGameOver();
+                        return;
+                    }
+                    
+                    // 更新游戏状态（方块下落）
+                    gameSession.updateTick();
+                    
+                    // 更新分数显示
+                    updateScoreDisplay();
+                    
+                    // 重绘界面
+                    draw();
+                });
             }
-        });
-
-        // 确保窗口能接收键盘事件
-        jframe.setFocusable(true);
-        jframe.requestFocusInWindow();
+        }, 0, DROP_INTERVAL);
     }
-
-    //重写方法：
-    /*
-    当进入游戏页面时调用初始化：
-    inite
-     */
-    @Override
-    public void onEnter() {
-        init();
-    }
-
-    //游戏结束后：
-    /*
-    1.返回开始菜单
-    2.重新开始
-     */
-    @Override
-    public void onExit() {
-        GameCore.changeView(new GameOverView());
-        GameCore.getCurrentView().onEnter();
-    }
-
-    //更新游戏数据
-    /*
-    收集玩家的操作
-    更新地图
-    移动方块位置
-    玩家分数
-    绘制地图
-     */
-    @Override
-    public void update() {
-        status = ViewStatus.ON_EXIT;
-        if (gameSession == null) return;
-
-        if (!gameSession.tryDrop()){ //可能需要修改对应方法的返回值
-            gameSession.getBoard().lock(gameSession.getActive());
-            gameSession.startNewGame();
+    
+    // 停止游戏定时器
+    private void stopGameTimer() {
+        if (autoDropTimer != null) {
+            autoDropTimer.cancel();
+            autoDropTimer.purge();
+            autoDropTimer = null;
         }
-        if (!gameSession.tryDrop()){
-            onExit();
-        }
-        draw();
-        jframe.repaint();
     }
 }

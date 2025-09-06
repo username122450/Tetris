@@ -4,7 +4,7 @@ import java.awt.*;
 
 // NEW: 棋盘模型
 public final class Board {
-	//数组地图的宽高与二维网格（0=空地，1表示方块）
+	//数组地图的宽高与二维网格（0=空地，2表示方块）
 	private final int width;
 	private final int height;
 	private final int[][] cells;
@@ -32,18 +32,20 @@ public final class Board {
 		Point pos = state.position;
 		int rotation = state.rotation;
 
+
 		// 获取当前旋转状态下的方块形状
 		int[][] shape = block.shade[rotation];
 
 		for(int y = 0; y < shape.length; y++) {
 			for(int x = 0; x < shape[y].length; x++) {
-				if(shape[y][x] != 0) {
-					int boardX = pos.x + x;
-					int boardY = pos.y + y;
+				if(shape[y][x] == 2) {
+					// 坐标映射：与GameView中的绘制逻辑保持一致
+					int boardX = pos.x + y;  // x坐标对应行，使用y作为行偏移
+					int boardY = pos.y + x;  // y坐标对应列，使用x作为列偏移
 
 					// 确保在棋盘范围内
-					if(boardX >= 0 && boardX < width && boardY >= 0 && boardY < height) {
-						cells[boardY][boardX] = 1;//锁定方块
+					if(boardX >= 0 && boardX < height && boardY >= 0 && boardY < width) {
+						cells[boardX][boardY] = 2;//锁定方块
 					}
 				}
 			}
@@ -56,7 +58,7 @@ public final class Board {
 	 */
 	private boolean isLineFull(int line){
 		for(int x = 0; x < width; x++){
-			if(cells[line][x] == 0){
+			if(cells[line][x] != 2){
 				return false;
 			}
 		}
