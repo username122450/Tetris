@@ -2,15 +2,14 @@ package view.page;
 
 import controller.*;
 import globle.Global;
-import view.AbstractGameView;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.*;
+import view.AbstractGameView;
 
 public class GameView extends AbstractGameView {
     private static boolean gameRunning = false; // 防止重复创建游戏窗口
@@ -59,6 +58,10 @@ public class GameView extends AbstractGameView {
                 int mapPanelHeight = gameSession.getBoard().getHeight() * BLOCK_SIZE;   //计算游戏窗口的高度
                 int offsetX = (getWidth() - mapPanelWidth) / 2;     //计算偏移量
                 int offsetY = (getHeight() - mapPanelHeight) / 2;   //计算偏移量
+
+                //绘制游戏背景
+                g2d.setColor(Color.BLACK);
+                g2d.fillRect(offsetX, offsetY, mapPanelWidth, mapPanelHeight);
 
                 int[][] originalCells = gameSession.getBoard().getCells();//获取当前地图（临时地图）用来绘制不修改
                 int[][] cells = new int[originalCells.length][originalCells[0].length];//复制地图
@@ -110,8 +113,12 @@ public class GameView extends AbstractGameView {
                 g2d.dispose();
             }
         };
-        centerPanel.setPreferredSize(new Dimension(400,600));//占用窗口的大小
-        centerPanel.setBackground(Color.black);//设置背景
+        //占用窗口的大小
+        int mapPanelWidth = gameSession.getBoard().getWidth();
+        int mapPanelHeight = gameSession.getBoard().getHeight();
+        centerPanel.setPreferredSize(new Dimension(mapPanelWidth, mapPanelHeight));
+
+        centerPanel.setBackground(Color.LIGHT_GRAY);//设置中心面板背景
         centerPanel.setBorder(BorderFactory.createLineBorder(Color.CYAN));
     };
 
@@ -226,7 +233,7 @@ public class GameView extends AbstractGameView {
     //构造函数
     public GameView(){
         /// 属性设置
-        this.gameSession = new GameSession(new Board(20,30));//棋盘
+        this.gameSession = new GameSession(new Board(20,36));//棋盘
         this.score = 0;//分数
         corePanel = new JPanel(new BorderLayout(5,5));
 
