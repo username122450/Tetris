@@ -164,15 +164,19 @@ public class GameView extends AbstractGameView {
                     
                     switch (e.getKeyCode()) {
                         case KeyEvent.VK_A:
+                        case KeyEvent.VK_LEFT:
                             gameSession.tryMoveLeft();
                             break;
                         case KeyEvent.VK_D:
+                        case KeyEvent.VK_RIGHT:
                             gameSession.tryMoveRight();
                             break;
                         case KeyEvent.VK_S:
+                        case KeyEvent.VK_DOWN:
                             gameSession.tryDrop();
                             break;
                         case KeyEvent.VK_W:
+                        case KeyEvent.VK_UP:
                             gameSession.tryRotateCW();
                             break;
                         case KeyEvent.VK_SPACE:
