@@ -73,6 +73,22 @@ public class MusicControl {
         }
     }
 
+    // 新增：卸载所有音频资源
+    public void unloadAllSounds() {
+        // 遍历所有已加载的音频并释放资源
+        for (String name : clips.keySet()) {
+            Clip clip = clips.get(name);
+            if (clip != null) {
+                clip.stop();  // 停止播放
+                clip.close(); // 关闭音频资源，释放系统资源
+            }
+        }
+        // 清空存储集合
+        clips.clear();
+        volumeControls.clear();
+        System.out.println("已卸载所有音频资源");
+    }
+
     //播放音频
     /*
     name:别称
