@@ -48,9 +48,3 @@ public class SoundResource {
         return soundMap;
     }
 }
-
-class SoundResource2 {
-    // 这个包用来存储需要用到的音频文件
-
-
-}
