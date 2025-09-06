@@ -1,7 +1,7 @@
 package controller;
 
-import tools.ImageControl;
-import tools.MusicControl;
+import image.ImageControl;
+import sound.MusicControl;
 import view.page.MenuView;
 
 public class GameCore {

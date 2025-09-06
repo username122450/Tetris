@@ -1,6 +1,4 @@
-package tools;
-
-import sound.SoundResource;
+package sound;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
