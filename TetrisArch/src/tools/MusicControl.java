@@ -139,5 +139,7 @@ public class MusicControl {
         float gain = min + (max - min) * (num / 100.0f);
         control.setValue(gain);
     }
+
+    
 }
 
