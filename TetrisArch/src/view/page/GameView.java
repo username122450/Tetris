@@ -13,7 +13,7 @@ import sound.MusicControl;
 import view.AbstractGameView;
 
 public class GameView extends AbstractGameView {
-    private static boolean gameRunning = false; // 防止重复创建游戏窗口
+    public static boolean gameRunning = false; // 防止重复创建游戏窗口
     private GameSession gameSession;
     final int BLOCK_SIZE = 20;
     private int score;
@@ -23,7 +23,9 @@ public class GameView extends AbstractGameView {
 
     //计时器
     private java.util.Timer autoDropTimer; // 计时器
-    private final long DROP_INTERVAL = 500; // 下落时间
+    private  long DROP_INTERVAL; // 下落时间初始
+    private final int JaSu = 50;
+    private long lastScheduledInterval = -1; // 當前定時器使用的間隔
 
     // 公共方法：启动游戏,启动游戏调用次方法
     public void startGame() {
@@ -180,6 +182,10 @@ public class GameView extends AbstractGameView {
                         case KeyEvent.VK_UP:
                             gameSession.tryRotateCW();
                             break;
+                        case KeyEvent.VK_P:
+                        case KeyEvent.VK_ESCAPE:
+                            pauseGame();
+                            break;
                         case KeyEvent.VK_SPACE:
                             // 快速下落
                             while (gameSession.tryDrop()) {
@@ -206,7 +212,19 @@ public class GameView extends AbstractGameView {
     private void updateScoreDisplay() {
         if (scoreLabel != null) {
             score = gameSession.getScore();
+            if(DROP_INTERVAL > 50) {
+                int a = score%300;
+                DROP_INTERVAL = DROP_INTERVAL - a*JaSu;
+            }
+            else {
+                DROP_INTERVAL = 50;
+            }
             scoreLabel.setText("分数: " + score);
+
+            // 若下落速度變更，重啟定時器以應用新間隔
+            if (autoDropTimer != null && lastScheduledInterval != DROP_INTERVAL) {
+                restartGameTimer();
+            }
         }
     }
     
@@ -243,6 +261,7 @@ public class GameView extends AbstractGameView {
         this.gameSession = new GameSession(new Board(20,32));//棋盘
         this.score = 0;//分数
         corePanel = new JPanel(new BorderLayout(5,5));
+        this.DROP_INTERVAL = 500;
 
         /// 面板设置
         this.setTitle("俄罗斯方块游戏");
@@ -324,6 +343,7 @@ public class GameView extends AbstractGameView {
                 });
             }
         }, 0, DROP_INTERVAL);
+        lastScheduledInterval = DROP_INTERVAL;
     }
     
     // 停止游戏定时器
@@ -333,5 +353,26 @@ public class GameView extends AbstractGameView {
             autoDropTimer.purge();
             autoDropTimer = null;
         }
+    }
+
+    // 重置定时器
+    private void restartGameTimer() {
+        stopGameTimer();
+        startGameTimer();
+    }
+
+    // 暂停游戏
+    private void pauseGame() {
+        stopGameTimer();
+        this.setAlwaysOnTop(false);
+        PauseView pauseView = new PauseView(this);
+        pauseView.start();
+    }
+
+    // 恢复
+    public void resumeGame() {
+        restartGameTimer();
+        this.setAlwaysOnTop(true);
+        this.requestFocus();
     }
 }
