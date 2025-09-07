@@ -10,7 +10,13 @@ public final class Scoring {
 		if (lines <= 0) {
 			return 0;
 		}
-		return lines;
+		switch(lines){
+			case 1: return 1;
+			case 2: return 3;
+			case 3: return 5;
+			case 4: return 8;
+			default: return lines*2+1;
+		}
 	}
 }
 
