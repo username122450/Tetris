@@ -111,19 +111,19 @@ public class GameOverView extends AbstractGameView {
             public void actionPerformed(ActionEvent e) {
                 // 重新开始游戏
                 MusicControl.playSound("button", false);
-                MusicControl.playSound("background", false);
+                MusicControl.playSound("background", true);
                 GameView gameView = new GameView();
                 gameView.start();
                 // 关闭当前窗口
                 dispose();
             }
         });
-
+ 
         menuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MusicControl.playSound("button", false);
-                MusicControl.playSound("background", false);
+                MusicControl.playSound("title", true);
                 // 返回主菜单
                 MenuView menuView = new MenuView();
                 menuView.start();

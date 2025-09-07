@@ -20,7 +20,7 @@ public class GameCore {
         //加载音乐
         musicControl.loadAllSounds();
         //播放音乐
-        musicControl.playSound("background",true);
+        musicControl.playSound("title",true);
 
         //初始化图片控制
         /*ImageControl imageControl = new ImageControl();

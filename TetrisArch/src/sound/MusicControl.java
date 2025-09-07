@@ -1,6 +1,8 @@
 package sound;
 
 import javax.sound.sampled.*;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -8,7 +10,7 @@ import java.util.Map;
 
 public class MusicControl {
     public static Map<String, Clip> clips = new HashMap<String,Clip>();
-    private Map<String, FloatControl> volumeControls = new HashMap<>();
+    private static Map<String, FloatControl> volumeControls = new HashMap<>();
 
 
 
@@ -31,22 +33,26 @@ public class MusicControl {
             return;
         }
 
-        try {
-            InputStream is = getClass().getResourceAsStream(path);
-            if (is == null) {
+        try (InputStream initialStream = getClass().getResourceAsStream(path)) {
+            if (initialStream == null) {
                 System.err.println("找不到音频资源: " + path);
                 return;
             }
+            byte[] audioBytes = initialStream.readAllBytes(); // Java 9+
 
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(is);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(audioBytes);
+                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(bais)) {
 
-            FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            volumeControls.put(name, control);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioStream);
 
-            clips.put(name, clip);
-            System.out.println("成功加载音频: " + name + " (" + path + ")");
+                // 获取音量控制
+                FloatControl control = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                volumeControls.put(name, control);
+
+                clips.put(name, clip);
+                System.out.println("成功加载音频: " + name + " (" + path + ")");
+            }
 
         } catch (UnsupportedAudioFileException e) {
             System.err.println("不支持的音频格式: " + path);

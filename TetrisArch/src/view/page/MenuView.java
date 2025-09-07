@@ -117,6 +117,8 @@ public class MenuView extends AbstractGameView {
         start.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
+                MusicControl.pauseSound("title");
+                MusicControl.playSound("background", true);
                 MusicControl.playSound("button", false);
                 menuRunning = false;
                 // 直接创建并启动游戏
@@ -132,6 +134,12 @@ public class MenuView extends AbstractGameView {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 MusicControl.playSound("button", false);
+                // 创建设置界面
+                System.out.println("创建了设置界面");
+                SettingView s = new SettingView();
+                s.start();
+                frame.dispose();
+                menuRunning = false;
             }
         });
 
