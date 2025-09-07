@@ -24,12 +24,8 @@ public class GameOverView extends AbstractGameView {
 
     //初始化
     public GameOverView() {
-        //设置界面大小
-        this.setSize(Global.wide, Global.height);
         //设置界面关闭模式
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //设置界面居中
-        this.setLocationRelativeTo(null);
         //设置界面可视化
         this.setVisible(false);
         //标题
@@ -87,6 +83,8 @@ public class GameOverView extends AbstractGameView {
 
         this.add(gameOverLabel);
         this.pack();
+        //设置界面居中
+        this.setLocationRelativeTo(null);
 
     }
 
