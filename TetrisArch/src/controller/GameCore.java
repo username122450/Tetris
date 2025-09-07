@@ -22,14 +22,14 @@ public class GameCore {
         //初始化音乐控制
         MusicControl musicControl = new MusicControl();
         //加载音乐
-        musicControl.loadAllSounds();;
+        musicControl.loadSound("","");
         //播放音乐
-//        musicControl.playSound("",true);
+        musicControl.playSound("",true);
 
         //初始化图片控制
-//        ImageControl imageControl = new ImageControl();
-//        //加载图片
-//        imageControl.loadallImage();
+        ImageControl imageControl = new ImageControl();
+        //加载图片
+        imageControl.loadImage("","");
 
         System.out.println("游戏资源加载完毕");
     }
@@ -38,11 +38,11 @@ public class GameCore {
     private void End(){
         //卸载音乐
         MusicControl musicControl = new MusicControl();
-        musicControl.unloadAllSounds();
+        musicControl.unloadSound("");
 
         //卸载图片
-//        ImageControl imageControl = new ImageControl();
-//        imageControl.loadImage("","");
+        ImageControl imageControl = new ImageControl();
+        imageControl.loadImage("","");
 
         System.out.println("游戏资源已释放");
     }
