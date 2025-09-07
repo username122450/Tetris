@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class MusicControl {
     public static Map<String, Clip> clips = new HashMap<String,Clip>();
-    private Map<String, FloatControl> volumeControls = new HashMap<>();
+    private static Map<String, FloatControl> volumeControls = new HashMap<>();
 
 
 
