@@ -105,7 +105,6 @@ public class MenuView extends AbstractGameView {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        handleInput();
     }
 
     //处理用户操作
@@ -141,6 +140,10 @@ public class MenuView extends AbstractGameView {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 MusicControl.playSound("button", false);
+                MenuView.menuRunning = false;
+                HelpView helpView = new HelpView();
+                helpView.start();
+                frame.dispose();
             }
         });
         
