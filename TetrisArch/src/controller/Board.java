@@ -1,6 +1,7 @@
 package controller;
 
 import java.awt.*;
+import sound.MusicControl;
 
 // NEW: 棋盘模型
 public final class Board {
@@ -32,6 +33,7 @@ public final class Board {
 		Point pos = state.position;
 		int rotation = state.rotation;
 
+		MusicControl.playSound("down", false);
 
 		// 获取当前旋转状态下的方块形状
 		int[][] shape = block.shade[rotation];
@@ -70,6 +72,7 @@ public final class Board {
 	并下移
 	 */
 	private void clearLine(int line){
+		MusicControl.playSound("clear", false);
 		//清除这一行并将之前的下移一行
 		for(int y = line; y > 0; y--){
 			for(int x = 0; x < width; x++){

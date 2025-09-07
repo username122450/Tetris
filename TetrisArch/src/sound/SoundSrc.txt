@@ -1,3 +1,6 @@
-GameOver:./GameOver.wav
-button:./button.wav
-background:./background.wav
+GameOver:GameOver.wav
+button:button.wav
+background:background.wav
+title:title.wav
+down:down.wav
+clear:clear.wav
