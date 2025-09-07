@@ -1,12 +1,13 @@
 package view.page;
 
+import controller.GameCore;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import sound.MusicControl;
 import view.AbstractGameView;
 import view.page.helper_classes.CustomFontLoader;
 import view.page.helper_classes.OnClickEventHelper;
@@ -104,7 +105,6 @@ public class MenuView extends AbstractGameView {
         frame.setVisible(true);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-        handleInput();
     }
 
     //处理用户操作
@@ -117,6 +117,7 @@ public class MenuView extends AbstractGameView {
         start.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
+                MusicControl.playSound("button", false);
                 menuRunning = false;
                 // 直接创建并启动游戏
                 GameView gameView = new GameView();
@@ -125,11 +126,33 @@ public class MenuView extends AbstractGameView {
                 frame.dispose();
             }
         });
+
+        //设置
+        settings.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                MusicControl.playSound("button", false);
+            }
+        });
+
+        //帮助
+        help.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                MusicControl.playSound("button", false);
+                MenuView.menuRunning = false;
+                HelpView helpView = new HelpView();
+                helpView.start();
+                frame.dispose();
+            }
+        });
+        
         //退出游戏
         exit.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(java.awt.event.MouseEvent e) {
                 menuRunning = false;
+                MusicControl.playSound("button", false);
                 onExit();
             }
         });
@@ -137,6 +160,7 @@ public class MenuView extends AbstractGameView {
 
     //退出游戏时调用
     public void onExit() {
+        GameCore.End();
         frame.dispose();
     }
 }

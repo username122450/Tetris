@@ -7,10 +7,13 @@ public final class Scoring {
 	//计算分数，几行得几分
 	public static int scoreForClears(int lines) {
 
-		if (lines <= 0) {
-			return 0;
-		}
-		return lines;
+		return switch (lines) {
+            case 1 -> 1;
+            case 2 -> 3;
+            case 3 -> 5;
+            case 4 -> 8;
+            default -> 0;
+        };
 	}
 }
 

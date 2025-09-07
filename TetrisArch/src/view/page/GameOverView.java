@@ -1,12 +1,12 @@
 package view.page;
 
 import globle.Global;
-import view.AbstractGameView;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
+import sound.MusicControl;
+import view.AbstractGameView;
 
 public class GameOverView extends AbstractGameView {
     protected boolean isReStart;
@@ -24,12 +24,8 @@ public class GameOverView extends AbstractGameView {
 
     //初始化
     public GameOverView() {
-        //设置界面大小
-        this.setSize(Global.wide, Global.height);
         //设置界面关闭模式
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //设置界面居中
-        this.setLocationRelativeTo(null);
         //设置界面可视化
         this.setVisible(false);
         //标题
@@ -87,6 +83,8 @@ public class GameOverView extends AbstractGameView {
 
         this.add(gameOverLabel);
         this.pack();
+        //设置界面居中
+        this.setLocationRelativeTo(null);
 
     }
 
@@ -112,6 +110,8 @@ public class GameOverView extends AbstractGameView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 重新开始游戏
+                MusicControl.playSound("button", false);
+                MusicControl.playSound("background", false);
                 GameView gameView = new GameView();
                 gameView.start();
                 // 关闭当前窗口
@@ -122,6 +122,8 @@ public class GameOverView extends AbstractGameView {
         menuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                MusicControl.playSound("button", false);
+                MusicControl.playSound("background", false);
                 // 返回主菜单
                 MenuView menuView = new MenuView();
                 menuView.start();
