@@ -1,6 +1,4 @@
-package tools;
-
-import image.ImageResource;
+package image;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

@@ -6,7 +6,7 @@ import java.util.Random;
 
 //用于创建随机方块
 public class BlockManage {
-    private static Random rng = null;
+    private static Random rng = new Random();
     private static String[] type = new String[] {"I","O","LL","LR","T","ZL","ZR"};
 
     public BlockManage(Random rng) {
