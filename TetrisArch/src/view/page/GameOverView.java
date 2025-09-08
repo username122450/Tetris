@@ -9,7 +9,7 @@ import sound.MusicControl;
 import view.AbstractGameView;
 
 public class GameOverView extends AbstractGameView {
-    //protected boolean isReStart = false;
+
     private JLabel gameOverLabel;
     private JButton restartButton;
     private JButton menuButton;
@@ -18,15 +18,6 @@ public class GameOverView extends AbstractGameView {
     public GameOverView() {
     }
 
-    /*@Override
-    public void start() {
-        if (isReStart) {
-            System.out.println("结束界面已经创建，无法重复创建");
-            return;
-        }
-        isReStart = true;
-        super.start();
-    }*/
 
     @Override
     protected void init() {
@@ -113,7 +104,7 @@ public class GameOverView extends AbstractGameView {
                 MusicControl.playSound("background", true);
                 GameView gameView = new GameView();
                 gameView.start();
-                //isReStart = false;
+                
                 // 关闭当前窗口
                 dispose();
             }
@@ -127,7 +118,7 @@ public class GameOverView extends AbstractGameView {
                 // 返回主菜单
                 MenuView menuView = new MenuView();
                 menuView.start();
-                //isReStart = false;
+
                 // 关闭当前窗口
                 dispose();
             }
