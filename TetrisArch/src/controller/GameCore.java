@@ -32,14 +32,7 @@ public class GameCore {
 
     //游戏结束关闭资源：卸载资源
     public static void End(){
-        //卸载音乐
-        MusicControl musicControl = new MusicControl();
-        musicControl.unloadSound("");
-
-        //卸载图片
-        /*ImageControl imageControl = new ImageControl();
-        imageControl.loadImage("","");*/
-
-        System.out.println("游戏资源已释放");
+        System.out.println("游戏结束，正在关闭资源...");
+        System.exit(0);
     }
 }

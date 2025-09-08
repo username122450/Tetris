@@ -65,22 +65,6 @@ public class MusicControl {
         }
     }
 
-    //卸载音频
-    /*
-    加载后的别称
-     */
-    public void unloadSound(String name) {
-        Clip clip = clips.remove(name);
-        if (clip != null) {
-            clip.stop();
-            clip.close();
-            volumeControls.remove(name);
-            System.out.println("已卸载音频: " + name);
-        } else {
-            System.out.println("音频不存在: " + name);
-        }
-    }
-
     //播放音频
     /*
     name:别称
