@@ -162,6 +162,7 @@ public class MenuView extends AbstractGameView {
             public void mousePressed(java.awt.event.MouseEvent e) {
                 menuRunning = false;
                 MusicControl.playSound("button", false);
+                settingView.dispose();
                 onExit();
             }
         });
