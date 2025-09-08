@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
 
+import static globle.Global.settingView;
+
 public class SettingView extends AbstractGameView {
     /*
     界面设计{
@@ -22,6 +24,10 @@ public class SettingView extends AbstractGameView {
         JLabel label;
     }
      */
+
+    //指示是否进行过加载
+    public boolean isStart = false;
+
     private static boolean settingRunning = false;
     //开启音乐单选框
     JRadioButton open = new JRadioButton("开");
@@ -63,9 +69,10 @@ public class SettingView extends AbstractGameView {
 
         group.add(open);
         group.add(close);
-        open.setSelected(true);
         panel.add(open);
         panel.add(close);
+        open.setSelected(true);
+
         panel.setBackground(Color.LIGHT_GRAY);
 
         //音量滑块容器
@@ -121,17 +128,15 @@ public class SettingView extends AbstractGameView {
                 var names = MusicControl.clips.keySet();
                 if (button == open) {
                     open.setSelected(true);
+                    MusicControl.isPlaying = true;
                     //开启音乐
-                    for (String name : names) {
-                        m.resumeSound(name);
-                    }
+                    m.resumeSound("title");
                 }
                 else {
                     close.setSelected(true);
                     //关闭音乐
-                    for (String name : names) {
-                        m.pauseSound(name);
-                    }
+                    MusicControl.isPlaying = false;
+                    m.pauseSound("title");
                 }
             }
         };
@@ -158,7 +163,7 @@ public class SettingView extends AbstractGameView {
                 MenuView menuView = new MenuView();
                 menuView.start();
                 settingRunning = false;
-                dispose();
+                settingView.setVisible(false);
             }
         });
     }
@@ -170,7 +175,13 @@ public class SettingView extends AbstractGameView {
             System.out.println("设置已经在运行中，无法重复启动");
             return;
         }
-        settingRunning = true;
-        super.start();
+        if (!isStart) {
+            settingRunning = true;
+            super.start();
+            isStart = true;
+        }
+        else {
+            setVisible(true);
+        }
     }
 }

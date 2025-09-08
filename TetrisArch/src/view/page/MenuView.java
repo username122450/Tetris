@@ -13,6 +13,8 @@ import view.page.helper_classes.CustomFontLoader;
 import view.page.helper_classes.OnClickEventHelper;
 import view.page.helper_classes.RoundedBorder;
 
+import static globle.Global.settingView;
+
 public class MenuView extends AbstractGameView {
     private static boolean menuRunning = false; // 防止重复创建菜单窗口
     private JFrame frame = new JFrame("Tetris");
@@ -136,8 +138,7 @@ public class MenuView extends AbstractGameView {
                 MusicControl.playSound("button", false);
                 // 创建设置界面
                 System.out.println("创建了设置界面");
-                SettingView s = new SettingView();
-                s.start();
+                settingView.start();
                 frame.dispose();
                 menuRunning = false;
             }

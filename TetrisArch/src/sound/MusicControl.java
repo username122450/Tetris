@@ -11,6 +11,8 @@ import java.util.Map;
 public class MusicControl {
     public static Map<String, Clip> clips = new HashMap<String,Clip>();
     private static Map<String, FloatControl> volumeControls = new HashMap<>();
+    //标志是否播放除按钮之外音乐
+    public static boolean isPlaying = true;
 
 
 
@@ -85,18 +87,20 @@ public class MusicControl {
     isLoop：是否循环播放
      */
     public static void playSound(String name, boolean isLoop) {
-        Clip clip = clips.get(name);
-        if (clip == null) {
-            System.err.println("播放失败，音频未加载: " + name);
-            return;
-        }
+        if ("button".equals(name) || isPlaying) {
+            Clip clip = clips.get(name);
+            if (clip == null) {
+                System.err.println("播放失败，音频未加载: " + name);
+                return;
+            }
 
-        if (clip.isRunning()) {
-            clip.stop();
+            if (clip.isRunning()) {
+                clip.stop();
+            }
+            clip.setFramePosition(0);
+            clip.loop(isLoop ? Clip.LOOP_CONTINUOUSLY : 0);
+            clip.start();
         }
-        clip.setFramePosition(0);
-        clip.loop(isLoop ? Clip.LOOP_CONTINUOUSLY : 0);
-        clip.start();
     }
 
     //停止音频播放

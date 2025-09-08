@@ -1,5 +1,7 @@
 package globle;
 
+import view.page.SettingView;
+
 //定义全局变量
 public class Global {
     //旋转次数
@@ -9,4 +11,5 @@ public class Global {
     public static int wide = 800;
     public static int height = 1000;
 
+    public static SettingView settingView = new SettingView();
 }
