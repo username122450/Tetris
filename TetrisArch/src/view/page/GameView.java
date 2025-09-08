@@ -221,7 +221,7 @@ public class GameView extends AbstractGameView {
         // 隐藏并关闭当前窗口
         this.setVisible(false);
         this.dispose();
-        
+        gameRunning = false;
         // 显示游戏结束界面
         MusicControl.pauseSound("background");
         MusicControl.playSound("GameOver", false);
