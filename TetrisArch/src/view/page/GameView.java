@@ -23,8 +23,9 @@ public class GameView extends AbstractGameView {
 
     //计时器
     private java.util.Timer autoDropTimer; // 计时器
-    private  long DROP_INTERVAL; // 下落时间初始
-    private final int JaSu = 50;
+    private  long DROP_INTERVAL = 1000; // 下落时间初始
+    private final int INTERVAL_DECREMENT_PER_100_SCORE = 50; // 每个等级减少的间隔时间
+    private final int MIN_DROP_INTERVAL = 100; // 最小下落间隔（最快速度）
     private long lastScheduledInterval = -1; // 當前定時器使用的間隔
 
     // 公共方法：启动游戏,启动游戏调用次方法
@@ -212,13 +213,11 @@ public class GameView extends AbstractGameView {
     private void updateScoreDisplay() {
         if (scoreLabel != null) {
             score = gameSession.getScore();
-            if(DROP_INTERVAL > 50) {
-                int a = score%300;
-                DROP_INTERVAL = DROP_INTERVAL - a*JaSu;
-            }
-            else {
-                DROP_INTERVAL = 50;
-            }
+            
+            // 根据分数计算新的下落间隔
+            int level = score / 1000;  // 每 1000 分升一级
+            DROP_INTERVAL = Math.max(MIN_DROP_INTERVAL, DROP_INTERVAL - (level * INTERVAL_DECREMENT_PER_100_SCORE));
+            
             scoreLabel.setText("分数: " + score);
 
             // 若下落速度變更，重啟定時器以應用新間隔
