@@ -1,13 +1,12 @@
 package view.page;
 
 import globle.Global;
-import sound.MusicControl;
-import view.AbstractGameView;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.*;
+import sound.MusicControl;
+import view.AbstractGameView;
 
 public class PauseView extends AbstractGameView {
     /*
@@ -170,7 +169,9 @@ public class PauseView extends AbstractGameView {
         });
 
         exitButton.addActionListener(e -> {
+            MusicControl.pauseSound("background");
             MusicControl.playSound("button", false);
+            MusicControl.playSound("title", true);
             // 返回主菜单
             this.setVisible(false);
             dispose();
