@@ -20,6 +20,7 @@ public class GameView extends AbstractGameView {
     private JLabel scoreLabel;
     private JPanel centerPanel ;
     private JPanel corePanel;
+    private JPanel nextBlockPanel;
 
     //计时器
     private java.util.Timer autoDropTimer; // 计时器
@@ -126,11 +127,60 @@ public class GameView extends AbstractGameView {
         centerPanel.setBorder(BorderFactory.createLineBorder(Color.CYAN));
     };
 
+
+    /// 绘制下一个方块
+    private void setNextBlockPanel() {
+        nextBlockPanel = new JPanel(){
+            @Override
+            public void paintComponent(Graphics g){
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g.create();//创建画笔
+                Block nextBlock = gameSession.getNext();
+                if (nextBlock != null) {
+                    int panelWidth = getWidth();
+                    int panelHeight = getHeight();
+                    int blockWidth = 4 * BLOCK_SIZE;
+                    int blockHeight = 4 * BLOCK_SIZE;
+
+                    int startX = (panelWidth - blockWidth) / 2;
+                    int startY = (panelHeight - blockHeight) / 2;
+
+                    // 绘制标题
+                    g2d.setColor(Color.BLACK);
+                    g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
+                    g2d.drawString("下一个方块", 10, 20);
+
+                    for (int row = 0; row < 4; row++) {
+                        for (int col = 0; col < 4; col++) {
+                            if (nextBlock.shade[0][row][col] == 2) {
+                                int px = startX + col * BLOCK_SIZE;
+                                int py = startY + row * BLOCK_SIZE + 30; // 留出标题空间
+
+                                g2d.setColor(Color.yellow);
+                                g2d.fillRect(px, py, BLOCK_SIZE, BLOCK_SIZE);
+
+                                g2d.setColor(new Color(205, 170, 0));
+                                g2d.fillRect(px + 2, py + 2, BLOCK_SIZE - 4, BLOCK_SIZE - 4);
+                            }
+                        }
+                    }
+                g2d.dispose();
+                }
+            }
+        };
+        nextBlockPanel.setPreferredSize(new Dimension(150, 120)); // 增大面板尺寸
+        nextBlockPanel.setBackground(Color.LIGHT_GRAY);
+    }
+
+
     @Override
     protected void draw() {
         // 重绘中心面板
         if (centerPanel != null) {
             centerPanel.repaint();
+        }
+        if (nextBlockPanel != null) {
+            nextBlockPanel.repaint();
         }
     }
 
@@ -220,6 +270,10 @@ public class GameView extends AbstractGameView {
             
             scoreLabel.setText("分数: " + score);
 
+            if (nextBlockPanel != null) {
+                nextBlockPanel.repaint();
+            }
+
             // 若下落速度變更，重啟定時器以應用新間隔
             if (autoDropTimer != null && lastScheduledInterval != DROP_INTERVAL) {
                 restartGameTimer();
@@ -301,18 +355,34 @@ public class GameView extends AbstractGameView {
         LeftPanel.add(left);
         corePanel.add(LeftPanel, BorderLayout.WEST);
 
+        JPanel BlocksPanel = new JPanel(new GridLayout(2,4));
+
         //右边
-        JPanel RightPanel = new JPanel(new GridLayout(2,1));
-        scoreLabel = new JLabel("Score: " + score); //标签
+        JPanel RightPanel = new JPanel();
+        RightPanel.setLayout(new BoxLayout(RightPanel, BoxLayout.Y_AXIS));
         RightPanel.setPreferredSize(new Dimension(190,0));  //占用窗口的大小
         RightPanel.setBackground(Color.LIGHT_GRAY);//设置背景
+
+        JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        scoreLabel = new JLabel("Score: " + score); //标签
+        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        scoreLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 20));//设置字体
+        scorePanel.add(scoreLabel);
+        scorePanel.setBackground(Color.LIGHT_GRAY);
+
         Label right = new Label("Ranking",Label.CENTER);//设置右标签
         right.setFont(new Font(Font.DIALOG, Font.BOLD, 20));//设置字体
-        scoreLabel.setFont(new Font(Font.DIALOG, Font.BOLD, 20));//设置字体
-        RightPanel.add(right);
-        RightPanel.add(scoreLabel);
-        corePanel.add(RightPanel, BorderLayout.EAST);
 
+        RightPanel.add(right);
+        RightPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        RightPanel.add(scorePanel);
+        RightPanel.add(Box.createRigidArea(new Dimension(0,10)));
+
+        //右侧绘制下一个方块面板
+        setNextBlockPanel();
+        RightPanel.add(nextBlockPanel);
+
+        corePanel.add(RightPanel, BorderLayout.EAST);
 
         //添加到主面板
         this.add(corePanel);

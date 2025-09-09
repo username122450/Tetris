@@ -33,6 +33,7 @@ public class HelpView extends AbstractGameView {
     private JPanel panel;
     private JLabel text;
     private boolean isStarted = false;
+    private static Object Caller = null;
     
     public HelpView() {//不一定要用，如果直接在属性中创建（JFrame j = new JFrame()）就不需要需要
         frame = new JFrame("Help");
@@ -86,11 +87,21 @@ public class HelpView extends AbstractGameView {
                 @Override
                 public void mousePressed(java.awt.event.MouseEvent e) {
                     MusicControl.playSound("button", false);
-                    MenuView menuView = new MenuView();
-                    menuView.start();
-                    frame.dispose();
+                    if (Caller instanceof MenuView) {
+                        MenuView menuView = new MenuView();
+                        menuView.start();
+                        frame.dispose();
+                    }
+                    else if(Caller instanceof PauseView){
+                        ((PauseView) Caller).setVisible(true);
+                        frame.dispose();
+                    }
                 }
             });
     }
+    }
+
+    public static void setCaller(Object caller) {
+        Caller = caller;
     }
 }

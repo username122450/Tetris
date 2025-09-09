@@ -138,6 +138,7 @@ public class MenuView extends AbstractGameView {
                 MusicControl.playSound("button", false);
                 // 创建设置界面
                 System.out.println("创建了设置界面");
+                SettingView.setCaller(MenuView.this);
                 settingView.start();
                 frame.dispose();
                 menuRunning = false;
@@ -151,6 +152,7 @@ public class MenuView extends AbstractGameView {
                 MusicControl.playSound("button", false);
                 MenuView.menuRunning = false;
                 HelpView helpView = new HelpView();
+                HelpView.setCaller(MenuView.this);
                 helpView.start();
                 frame.dispose();
             }

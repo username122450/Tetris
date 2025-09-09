@@ -24,7 +24,8 @@ public class SettingView extends AbstractGameView {
         JLabel label;
     }
      */
-
+    //记录调用者
+    private static Object caller;
     //指示是否进行过加载
     public boolean isStart = false;
 
@@ -160,10 +161,17 @@ public class SettingView extends AbstractGameView {
             @Override
             public void actionPerformed(ActionEvent e) {
                 MusicControl.playSound("button", false);
-                MenuView menuView = new MenuView();
-                menuView.start();
-                settingRunning = false;
-                settingView.setVisible(false);
+                if (caller instanceof MenuView) {
+                    MenuView menuView = new MenuView();
+                    menuView.start();
+                    settingRunning = false;
+                    settingView.setVisible(false);
+                }
+                else if (caller instanceof PauseView) {
+                    ((PauseView) caller).setVisible(true);
+                    settingRunning = false;
+                    settingView.setVisible(false);
+                }
             }
         });
     }
@@ -183,5 +191,9 @@ public class SettingView extends AbstractGameView {
         else {
             setVisible(true);
         }
+    }
+
+    public static void setCaller(AbstractGameView caller) {
+        SettingView.caller = caller;
     }
 }
