@@ -1,6 +1,7 @@
 package view.page;
 
 import controller.*;
+import controller.blocks.*;
 import globle.Global;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -331,7 +332,7 @@ public class GameView extends AbstractGameView {
         //上方的面板
         JPanel TopPanel = new JPanel();
         TopPanel.setBackground(Color.LIGHT_GRAY);
-        TopPanel.setPreferredSize(new Dimension(0,155));//占用窗口的大小
+        TopPanel.setPreferredSize(new Dimension(0,145));//占用窗口的大小
         Label top = new Label("Tetris");
         TopPanel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 100));
         TopPanel.add(top);
@@ -339,7 +340,7 @@ public class GameView extends AbstractGameView {
 
         //底部
         JPanel BottomPanel = new JPanel();
-        BottomPanel.setPreferredSize(new Dimension(0,155));//占用窗口的大小
+        BottomPanel.setPreferredSize(new Dimension(0,145));//占用窗口的大小
         BottomPanel.setBackground(Color.LIGHT_GRAY);//设置背景
         Label bottom = new Label("Other functions");
         bottom.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
@@ -347,15 +348,47 @@ public class GameView extends AbstractGameView {
         corePanel.add(BottomPanel, BorderLayout.SOUTH);
 
         //左边
-        JPanel LeftPanel = new JPanel(new GridLayout(2,1));
-        LeftPanel.setPreferredSize(new Dimension(190,0));//占用窗口的大小
-        LeftPanel.setBackground(Color.LIGHT_GRAY); //设置背景
-        Label left = new Label("HAPPY—GAME",Label.CENTER);
+        //左边
+        JPanel LeftPanel = new JPanel(new BorderLayout());
+        LeftPanel.setPreferredSize(new Dimension(190, 0));
+        LeftPanel.setBackground(Color.LIGHT_GRAY);
+
+// 创建标题
+        Label left = new Label("HAPPY—GAME", Label.CENTER);
         left.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-        LeftPanel.add(left);
+
+// 创建方块展示面板（4行2列）
+        JPanel blocksPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+        blocksPanel.setBackground(Color.LIGHT_GRAY);
+
+// 创建所有方块面板并添加到网格中
+        JPanel iBlockPanel = createBlockPanel(new I_Block(), "I");
+        JPanel llBlockPanel = createBlockPanel(new LL_Block(), "L");
+        JPanel lrBlockPanel = createBlockPanel(new LR_Block(), "J");
+        JPanel oBlockPanel = createBlockPanel(new O_Block(), "O");
+        JPanel tBlockPanel = createBlockPanel(new T_Block(), "T");
+        JPanel zlBlockPanel = createBlockPanel(new ZL_Block(), "S");
+        JPanel zrBlockPanel = createBlockPanel(new ZR_Block(), "Z");
+
+// 添加到网格布局（4行2列）
+        blocksPanel.add(iBlockPanel);
+        blocksPanel.add(llBlockPanel);
+        blocksPanel.add(lrBlockPanel);
+        blocksPanel.add(oBlockPanel);
+        blocksPanel.add(tBlockPanel);
+        blocksPanel.add(zlBlockPanel);
+        blocksPanel.add(zrBlockPanel);
+
+// 添加一个空面板凑齐4x2
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setBackground(Color.LIGHT_GRAY);
+        blocksPanel.add(emptyPanel);
+
+        LeftPanel.add(left, BorderLayout.NORTH);
+        LeftPanel.add(blocksPanel, BorderLayout.CENTER);
+
         corePanel.add(LeftPanel, BorderLayout.WEST);
 
-        JPanel BlocksPanel = new JPanel(new GridLayout(2,4));
 
         //右边
         JPanel RightPanel = new JPanel();
@@ -443,5 +476,54 @@ public class GameView extends AbstractGameView {
         restartGameTimer();
         this.setAlwaysOnTop(true);
         this.requestFocus();
+    }
+
+    private JPanel createBlockPanel(Block block, String blockName) {
+        JPanel panel = new JPanel(new BorderLayout()) {
+            @Override
+            public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+
+                // 绘制背景
+                g2d.setColor(Color.LIGHT_GRAY);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+
+                // 绘制方块名称
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 12));
+                g2d.drawString(blockName, 5, 15);
+
+                // 绘制方块
+                int BLOCK_MINI_SIZE = 15; // 小方块尺寸
+                int centerX = getWidth() / 2;
+                int centerY = getHeight() / 2;
+
+                // 计算起始位置（居中）
+                int startX = centerX - (2 * BLOCK_MINI_SIZE);
+                int startY = centerY - (2 * BLOCK_MINI_SIZE) + 10; // 向下偏移为名称留空间
+
+                for (int row = 0; row < 4; row++) {
+                    for (int col = 0; col < 4; col++) {
+                        if (block.shade[0][row][col] == 2) {
+                            int px = startX + col * BLOCK_MINI_SIZE;
+                            int py = startY + row * BLOCK_MINI_SIZE;
+
+                            // 使用黄色绘制方块
+                            g2d.setColor(Color.YELLOW);
+                            g2d.fillRect(px, py, BLOCK_MINI_SIZE, BLOCK_MINI_SIZE);
+
+                            g2d.setColor(new Color(205, 170, 0));
+                            g2d.fillRect(px + 2, py + 2, BLOCK_MINI_SIZE - 4, BLOCK_MINI_SIZE - 4);
+                        }
+                    }
+                }
+                g2d.dispose();
+            }
+        };
+
+        panel.setPreferredSize(new Dimension(80, 80));
+        panel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
+        return panel;
     }
 }
