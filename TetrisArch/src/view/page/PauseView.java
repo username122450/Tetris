@@ -147,6 +147,7 @@ public class PauseView extends AbstractGameView {
     protected void handleInput() {
         continueButton.addActionListener(e -> {
             MusicControl.playSound("button", false);
+            if(MusicControl.isPlaying) MusicControl.resumeSound("background");
             this.setVisible(false);
             this.dispose();
             if (gameView != null) {

@@ -1,20 +1,15 @@
 package view.page;
 
-import sound.MusicControl;
-import view.AbstractGameView;
-import view.page.helper_classes.CustomFontLoader;
-import view.page.helper_classes.RoundedBorder;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.text.View;
-import javax.swing.*;
+import static globle.Global.settingView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Set;
-
-import static globle.Global.settingView;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import sound.MusicControl;
+import view.AbstractGameView;
+import view.page.helper_classes.RoundedBorder;
 
 public class SettingView extends AbstractGameView {
     /*
@@ -131,13 +126,13 @@ public class SettingView extends AbstractGameView {
                     open.setSelected(true);
                     MusicControl.isPlaying = true;
                     //开启音乐
-                    m.resumeSound("title");
+                    if(caller instanceof MenuView) m.resumeSound("title");
                 }
                 else {
                     close.setSelected(true);
                     //关闭音乐
                     MusicControl.isPlaying = false;
-                    m.pauseSound("title");
+                    if(caller instanceof MenuView) m.pauseSound("title");
                 }
             }
         };

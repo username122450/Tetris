@@ -236,6 +236,7 @@ public class GameView extends AbstractGameView {
                             break;
                         case KeyEvent.VK_P:
                         case KeyEvent.VK_ESCAPE:
+                            MusicControl.pauseSound("background");
                             pauseGame();
                             break;
                         case KeyEvent.VK_SPACE:

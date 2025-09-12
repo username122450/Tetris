@@ -102,7 +102,7 @@ public class MusicControl {
     /*
     name：音频加载后的别称
      */
-    public void resumeSound(String name) {
+    public static void resumeSound(String name) {
         Clip clip = clips.get(name);
         if (clip != null && !clip.isRunning()) {
             clip.start();
