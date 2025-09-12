@@ -189,6 +189,7 @@ public class GameView extends AbstractGameView {
     protected void init() {
         // 显示界面
         this.setVisible(true);
+        this.setResizable(false);
         
         // 初始化游戏
         gameSession.startNewGame();
